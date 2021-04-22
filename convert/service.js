@@ -67,7 +67,7 @@ exports.convert_tiff = function (req, callback) {
                 callback({
                     error: true,
                     status: 200,
-                    data: []
+                    data: 'Unable to get TIFF.'
                 });
 
             } else if (response.status === 200) {
@@ -108,12 +108,12 @@ exports.convert_tiff = function (req, callback) {
 
         } catch(error) {
 
-            LOGGER.module().error('ERROR: [/repository/service module (get_tn)] Unable to get thumbnail from TN service. Request failed: ' + error);
+            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Unable to get TIFF from DuraCloud. Request failed: ' + error);
 
             callback({
                 error: true,
                 status: 200,
-                data: []
+                data: 'Unable to get TIFF from DuraCloud. Request failed.'
             });
         }
 
