@@ -21,7 +21,7 @@
 const SERVICE = require('../convert/service');
 
 exports.default = function (req, res) {
-    res.status(403).send({
+    res.status(200).send({
         info: 'University of Denver Libraries - Digital Object Repository Convert Service'
     });
 };
