@@ -28,4 +28,7 @@ module.exports = function (app) {
 
     app.route('/api/v1/convert/tiff')
         .post(KEY.verify, CONVERT.convert_tiff);
+
+    app.route('/api/v1/convert/batch')
+        .post(KEY.verify, CONVERT.convert_batch);
 };

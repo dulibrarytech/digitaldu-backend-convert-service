@@ -57,4 +57,6 @@ module.exports = function() {
     require('../convert/routes.js')(APP);
 
     DIRS.check_directories();
+
+    return APP;
 };

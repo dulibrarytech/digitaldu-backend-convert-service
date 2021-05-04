@@ -31,3 +31,9 @@ exports.convert_tiff = function (req, res) {
         res.status(data.status).send(data);
     });
 };
+
+exports.convert_batch = function (req, res) {
+    SERVICE.convert_batch(req, function (data) {
+        res.status(data.status).send(data);
+    });
+};

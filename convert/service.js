@@ -53,7 +53,8 @@ exports.convert_tiff = function (req, callback) {
 
         try {
 
-            let endpoint = 'https://' + CONFIG.duraCloudUser + ':' + CONFIG.duraCloudPwd + '@' + CONFIG.duraCloudApi + 'dip-store/' + data.file_name;
+            let endpoint = 'https://' + CONFIG.duraCloudUser + ':' + CONFIG.duraCloudPwd + '@' + CONFIG.duraCloudApi + 'dip-store/' + data.full_path;
+
             let response = await HTTP.get(endpoint, {
                 responseType: 'arraybuffer',
                 timeout: TIMEOUT,
@@ -72,48 +73,80 @@ exports.convert_tiff = function (req, callback) {
 
             } else if (response.status === 200) {
 
-                let buffer = await IM.convert({
-                    srcData: response.data,
-                    srcFormat: 'TIFF',
-                    quality: 100,
-                    format: 'JPG'
-                });
+                try {
 
-                FS.writeFile(STORAGE + data.uuid + '.jpg', buffer, function(error) {
+                    let buffer = await IM.convert({
+                        srcData: response.data,
+                        srcFormat: 'TIFF',
+                        quality: 75,
+                        format: 'JPG'
+                    });
 
-                    if (error) {
+                    FS.writeFile(STORAGE + data.object_name, buffer, function(error) {
 
-                        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)]' + error.message);
+                        if (error) {
+
+                            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
+
+                            callback({
+                                error: true,
+                                status: 201,
+                                data: {
+                                    message: error.message
+                                }
+                            });
+                        }
+
+                        LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
 
                         callback({
-                            error: true,
+                            error: false,
                             status: 201,
-                            data: {
-                                message: error.message
-                            }
+                            data: data.object_name + ' saved.'
                         });
-                    }
-
-                    LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.uuid + '.jpg saved.');
-
-                    callback({
-                        error: false,
-                        status: 201,
-                        data: data.uuid + '.jpg saved.'
                     });
-                });
+
+                } catch(error) {
+
+                    LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+
+                    FS.writeFile(STORAGE + data.object_name, response.data, function(error) {
+
+                        if (error) {
+
+                            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
+
+                            callback({
+                                error: true,
+                                status: 201,
+                                data: {
+                                    message: error.message
+                                }
+                            });
+                        }
+
+                        LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved as tiff.');
+
+                        callback({
+                            error: false,
+                            status: 201,
+                            data: data.object_name + ' saved as tiff.'
+                        });
+                    });
+
+                }
             }
 
             return false;
 
         } catch(error) {
 
-            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Unable to get TIFF from DuraCloud. Request failed: ' + error);
+            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Unable to process TIFF: ' + error);
 
             callback({
                 error: true,
                 status: 200,
-                data: 'Unable to get TIFF from DuraCloud. Request failed.'
+                data: 'Unable to process TIFF'
             });
         }
 
