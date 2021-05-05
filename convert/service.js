@@ -78,25 +78,11 @@ exports.convert_tiff = function (req, callback) {
 
                     JIMP.read(response.data)
                         .then(function (file) {
-
-                            file.quality(80).write(STORAGE + data.object_name);
-
+                            file.quality(CONFIG.imageQuality).write(STORAGE + data.object_name);
                             LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
-
-                            /*
-                            callback({
-                                error: false,
-                                status: 201,
-                                data: data.object_name + ' saved.'
-                            });
-
-                             */
-
-                        });
-                        /*
+                        })
                         .catch(function (error) {
-
-                        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+                            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
 
                         callback({
                             error: true,
@@ -108,106 +94,15 @@ exports.convert_tiff = function (req, callback) {
 
                     });
 
-                         */
-
                 } catch (error) {
-
                     LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
-
-                    /*
-                    callback({
-                        error: true,
-                        status: 201,
-                        data: {
-                            message: error
-                        }
-                    });
-
-                     */
                 }
-
-
-                /*
-                try {
-
-                    let buffer = await IM.convert({
-                        srcData: response.data,
-                        srcFormat: 'TIFF',
-                        quality: 75,
-                        format: 'JPG'
-                    });
-
-                    FS.writeFile(STORAGE + data.object_name, buffer, function(error) {
-
-                        if (error) {
-
-                            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
-
-                            callback({
-                                error: true,
-                                status: 201,
-                                data: {
-                                    message: error.message
-                                }
-                            });
-                        }
-
-                        LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
-
-                        callback({
-                            error: false,
-                            status: 201,
-                            data: data.object_name + ' saved.'
-                        });
-                    });
-
-                } catch(error) {
-
-                    LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
-
-                    FS.writeFile(STORAGE + data.object_name, response.data, function(error) {
-
-                        if (error) {
-
-                            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
-
-                            callback({
-                                error: true,
-                                status: 201,
-                                data: {
-                                    message: error.message
-                                }
-                            });
-                        }
-
-                        LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved as tiff.');
-
-                        callback({
-                            error: false,
-                            status: 201,
-                            data: data.object_name + ' saved as tiff.'
-                        });
-                    });
-
-                }
-
-                 */
             }
 
             return false;
 
         } catch(error) {
-
             LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Unable to process TIFF: ' + error);
-
-            /*
-            callback({
-                error: true,
-                status: 200,
-                data: 'Unable to process TIFF'
-            });
-
-             */
         }
 
     })();
