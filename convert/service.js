@@ -22,7 +22,8 @@ const CONFIG = require('../config/config'),
     LOGGER = require('../libs/log4'),
     HTTP = require('axios'),
     FS = require('fs'),
-    IM = require('imagemagick-convert'),
+    // IM = require('imagemagick-convert'),
+    JIMP = require('jimp'),
     STORAGE = './storage/',
     TIMEOUT = 60000,
     HEADER = {
@@ -73,6 +74,60 @@ exports.convert_tiff = function (req, callback) {
 
             } else if (response.status === 200) {
 
+                try {
+
+                    JIMP.read(response.data)
+                        .then(function (file) {
+
+                            file.quality(80).write(STORAGE + data.object_name);
+
+                            LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
+
+                            /*
+                            callback({
+                                error: false,
+                                status: 201,
+                                data: data.object_name + ' saved.'
+                            });
+
+                             */
+
+                        });
+                        /*
+                        .catch(function (error) {
+
+                        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+
+                        callback({
+                            error: true,
+                            status: 201,
+                            data: {
+                                message: error
+                            }
+                        });
+
+                    });
+
+                         */
+
+                } catch (error) {
+
+                    LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+
+                    /*
+                    callback({
+                        error: true,
+                        status: 201,
+                        data: {
+                            message: error
+                        }
+                    });
+
+                     */
+                }
+
+
+                /*
                 try {
 
                     let buffer = await IM.convert({
@@ -135,6 +190,8 @@ exports.convert_tiff = function (req, callback) {
                     });
 
                 }
+
+                 */
             }
 
             return false;
@@ -143,12 +200,21 @@ exports.convert_tiff = function (req, callback) {
 
             LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Unable to process TIFF: ' + error);
 
+            /*
             callback({
                 error: true,
                 status: 200,
                 data: 'Unable to process TIFF'
             });
+
+             */
         }
 
     })();
+
+    callback({
+        error: false,
+        status: 201,
+        data: 'Processing ' + data.object_name
+    });
 };
