@@ -78,7 +78,7 @@ exports.convert_tiff = function (req, callback) {
 
                     JIMP.read(response.data)
                         .then(function (file) {
-                            file.quality(CONFIG.imageQuality).write(STORAGE + data.object_name);
+                            file.quality(75).write(STORAGE + data.object_name);
                             LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
                         })
                         .catch(function (error) {
