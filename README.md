@@ -26,7 +26,6 @@ All other content is released under [CC-BY-4.0](https://creativecommons.org/lice
 ### Local Environment Setup
 
 ```
-imagemagick is required
 go into digitaldu-backend-convert-service
 npm install
 add .env file in root folder
