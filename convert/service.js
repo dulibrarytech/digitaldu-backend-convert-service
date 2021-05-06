@@ -20,11 +20,8 @@
 
 const CONFIG = require('../config/config'),
     LOGGER = require('../libs/log4'),
+    JIMP = require('../libs/jimp'),
     HTTP = require('axios'),
-    FS = require('fs'),
-    // IM = require('imagemagick-convert'),
-    JIMP = require('jimp'),
-    STORAGE = './storage/',
     TIMEOUT = 60000,
     HEADER = {
         'Content-Type': 'application/json'
@@ -73,30 +70,7 @@ exports.convert_tiff = function (req, callback) {
                 });
 
             } else if (response.status === 200) {
-
-                try {
-
-                    JIMP.read(response.data)
-                        .then(function (file) {
-                            file.quality(75).write(STORAGE + data.object_name);
-                            LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
-                        })
-                        .catch(function (error) {
-                            LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
-
-                        callback({
-                            error: true,
-                            status: 201,
-                            data: {
-                                message: error
-                            }
-                        });
-
-                    });
-
-                } catch (error) {
-                    LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
-                }
+                JIMP.convert(response, data);
             }
 
             return false;
