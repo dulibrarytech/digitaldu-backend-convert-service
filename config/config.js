@@ -27,5 +27,5 @@ module.exports = {
     duraCloudApi: process.env.DURACLOUD_API,
     duraCloudUser: process.env.DURACLOUD_USER,
     duraCloudPwd: process.env.DURACLOUD_PWD,
-    imageQuality: process.env.IMAGE_QUALITY
+    imageQuality: parseInt(process.env.IMAGE_QUALITY)
 };

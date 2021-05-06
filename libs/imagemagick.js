@@ -18,7 +18,8 @@
 
 'use strict';
 
-const IM = require('imagemagick-convert'),
+const CONFIG = require('../config/config'),
+    IM = require('imagemagick-convert'),
     FS = require('fs'),
     LOGGER = require('../libs/log4'),
     STORAGE = './storage/';
@@ -30,7 +31,7 @@ exports.convert = function(response, data) {
         let buffer = await IM.convert({
             srcData: response.data,
             srcFormat: 'TIFF',
-            quality: 75,
+            quality: CONFIG.imageQuality,
             format: 'JPG'
         });
 

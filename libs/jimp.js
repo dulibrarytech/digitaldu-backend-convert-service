@@ -18,9 +18,11 @@
 
 'use strict';
 
-const JIMP = require('jimp'),
+const CONFIG = require('../config/config'),
     LOGGER = require('../libs/log4'),
+    JIMP = require('jimp'),
     STORAGE = './storage/';
+
 
 exports.convert = function(response, data) {
 
@@ -28,7 +30,7 @@ exports.convert = function(response, data) {
 
         JIMP.read(response.data)
             .then(function (file) {
-                file.quality(75).write(STORAGE + data.object_name);
+                file.quality(CONFIG.imageQuality).write(STORAGE + data.object_name);
                 LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
             })
             .catch(function (error) {
