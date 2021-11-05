@@ -23,15 +23,15 @@ const CONFIG = require('../config/config'),
     JIMP = require('jimp'),
     STORAGE = './storage/';
 
-
 exports.convert = function(response, data) {
 
     try {
 
         JIMP.read(response.data)
             .then(function (file) {
-                file.quality(CONFIG.imageQuality).write(STORAGE + data.object_name);
-                LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved.');
+                let jpg = data.object_name.replace('.tif', '.jpg');
+                file.quality(CONFIG.imageQuality).write(STORAGE + jpg); // data.object_name
+                LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + jpg + ' saved.');
             })
             .catch(function (error) {
                 LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);

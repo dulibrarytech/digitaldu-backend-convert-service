@@ -21,6 +21,7 @@
 const CONFIG = require('../config/config'),
     LOGGER = require('../libs/log4'),
     JIMP = require('../libs/jimp'),
+    IMG = require('../libs/imagemagick'),
     HTTP = require('axios'),
     TIMEOUT = 60000,
     HEADER = {
@@ -71,6 +72,7 @@ exports.convert_tiff = function (req, callback) {
 
             } else if (response.status === 200) {
                 JIMP.convert(response, data);
+                // IMG.convert(response, data);
             }
 
             return false;

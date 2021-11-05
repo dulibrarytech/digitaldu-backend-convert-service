@@ -24,7 +24,7 @@ const CONFIG = require('../config/config'),
     LOGGER = require('../libs/log4'),
     STORAGE = './storage/';
 
-exports.convert = function(response, data) {
+exports.convert = async function(response, data) {
 
     try {
 
