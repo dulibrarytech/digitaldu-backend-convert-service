@@ -19,11 +19,33 @@
 'use strict';
 
 const SERVICE = require('../convert/service');
+const FS = require('fs');
+const PATH = require("path");
 
 exports.default = function (req, res) {
     res.status(200).send({
         info: 'University of Denver Libraries - Digital Object Repository Convert Service'
     });
+};
+
+exports.get_image = function (req, res) {
+
+    let image = req.query.filename;
+
+    try {
+
+        if(FS.existsSync('./storage/' + image)) {
+            res.set('Content-Type', 'image/jpeg');
+            res.sendFile(PATH.join(__dirname, '../storage', image));
+        } else {
+            res.status(404).send({
+                message: 'Resource not found.'
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 exports.convert_tiff = function (req, res) {

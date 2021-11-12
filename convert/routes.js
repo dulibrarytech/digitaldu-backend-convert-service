@@ -26,6 +26,9 @@ module.exports = function (app) {
     app.route('/')
         .get(CONVERT.default);
 
+    app.route('/api/v1/image')
+        .get(KEY.verify, CONVERT.get_image);
+
     app.route('/api/v1/convert/tiff')
         .post(KEY.verify, CONVERT.convert_tiff);
 
