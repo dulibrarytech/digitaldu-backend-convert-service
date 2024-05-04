@@ -23,15 +23,15 @@ const CONVERT = require('../convert/controller'),
 
 module.exports = function (app) {
 
-    app.route('/')
+    app.route('/convert')
         .get(CONVERT.default);
 
-    app.route('/api/v1/image')
+    app.route('/_/api/v1/image')
         .get(KEY.verify, CONVERT.get_image);
 
-    app.route('/api/v1/convert/tiff')
+    app.route('/_/api/v1/convert/tiff')
         .post(KEY.verify, CONVERT.convert_tiff);
 
-    app.route('/api/v1/convert/batch')
+    app.route('/_/api/v1/convert/batch')
         .post(KEY.verify, CONVERT.convert_batch);
 };
