@@ -20,8 +20,8 @@
 
 const SERVICE = require('../convert/service');
 const FS = require('fs');
-const PATH = require("path");
-
+const PATH = require('path');
+const CONFIG = require('../config/config');
 exports.default = function (req, res) {
     res.status(200).send({
         info: 'University of Denver Libraries - Digital Object Repository Convert Service'
@@ -34,7 +34,7 @@ exports.get_image = function (req, res) {
 
     try {
 
-        if(FS.existsSync('./storage/' + image)) {
+        if(FS.existsSync( CONFIG.storagePath + image)) { // './storage/'
             res.set('Content-Type', 'image/jpeg');
             res.sendFile(PATH.join(__dirname, '../storage', image));
         } else {
