@@ -18,11 +18,10 @@
 
 'use strict';
 
-const CONFIG = require('../config/config'),
-    IM = require('imagemagick-convert'),
-    FS = require('fs'),
-    LOGGER = require('../libs/log4'),
-    STORAGE = './storage/';
+const CONFIG = require('../config/config');
+const IM = require('imagemagick-convert');
+const FS = require('fs');
+const LOGGER = require('../libs/log4');
 
 exports.convert = async function(response, data) {
 
@@ -35,7 +34,7 @@ exports.convert = async function(response, data) {
             format: 'JPG'
         });
 
-        FS.writeFile(STORAGE + data.object_name, buffer, function(error) {
+        FS.writeFile(CONFIG.storagePath + data.object_name, buffer, function(error) {
 
             if (error) {
                 LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
@@ -46,15 +45,15 @@ exports.convert = async function(response, data) {
 
     } catch(error) {
 
-        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error.message);
 
-        FS.writeFile(STORAGE + data.object_name, response.data, function(error) {
+        FS.writeFile(CONFIG.storagePath + data.object_name, response.data, function(error) {
 
             if (error) {
                 LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
             }
 
-            LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name + ' saved as tiff.');
+            LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name.replace('.jpg', '.tif') + ' saved as tiff.');
         });
     }
 };

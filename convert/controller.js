@@ -22,6 +22,7 @@ const SERVICE = require('../convert/service');
 const FS = require('fs');
 const PATH = require('path');
 const CONFIG = require('../config/config');
+
 exports.default = function (req, res) {
     res.status(200).send({
         info: 'University of Denver Libraries - Digital Object Repository Convert Service'
@@ -34,7 +35,7 @@ exports.get_image = function (req, res) {
 
     try {
 
-        if(FS.existsSync( CONFIG.storagePath + image)) { // './storage/'
+        if(FS.existsSync( CONFIG.storagePath + image)) {
             res.set('Content-Type', 'image/jpeg');
             res.sendFile(PATH.join(__dirname, '../storage', image));
         } else {
@@ -49,7 +50,15 @@ exports.get_image = function (req, res) {
 };
 
 exports.convert_tiff = function (req, res) {
-    SERVICE.convert_tiff(req, function (data) {
+
+    if (req.body.sip_uuid === undefined || req.body.sip_uuid.length === 0) {
+        res.status(400).send('Bad request.');
+        return false;
+    }
+
+    const data = req.body;
+
+    SERVICE.convert_tiff(data, function (data) {
         res.status(data.status).send(data);
     });
 };

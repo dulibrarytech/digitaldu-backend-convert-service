@@ -18,35 +18,22 @@
 
 'use strict';
 
-const CONFIG = require('../config/config'),
-    LOGGER = require('../libs/log4'),
-    JIMP = require('../libs/jimp'),
-    IMG = require('../libs/imagemagick'),
-    HTTP = require('axios'),
-    TIMEOUT = 60000,
-    HEADER = {
+const CONFIG = require('../config/config');
+const LOGGER = require('../libs/log4');
+const JIMP = require('../libs/jimp');
+const IMG = require('../libs/imagemagick');
+const HTTP = require('axios');
+const TIMEOUT = 60000;
+const HEADER = {
         'Content-Type': 'application/json'
     };
 
 /**
  * Converts TIFF to JPG
- * @param req
+ * @param data
  * @param callback
- * @returns {boolean}
  */
-exports.convert_tiff = function (req, callback) {
-
-    let data = req.body;
-
-    if (data.sip_uuid === undefined || data.sip_uuid.length === 0) {
-
-        callback({
-            status: 400,
-            message: 'Bad request.'
-        });
-
-        return false;
-    }
+exports.convert_tiff = function (data, callback) {
 
     (async () => {
 
@@ -60,17 +47,7 @@ exports.convert_tiff = function (req, callback) {
                 headers: HEADER
             });
 
-            if (response.status !== 200) {
-
-                LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Unable to get TIFF.');
-
-                callback({
-                    error: true,
-                    status: 200,
-                    data: 'Unable to get TIFF.'
-                });
-
-            } else if (response.status === 200) {
+            if (response.status === 200) {
                 JIMP.convert(response, data);
                 // IMG.convert(response, data);
             }

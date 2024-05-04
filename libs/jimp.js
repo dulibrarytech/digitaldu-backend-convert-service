@@ -18,10 +18,10 @@
 
 'use strict';
 
-const CONFIG = require('../config/config'),
-    LOGGER = require('../libs/log4'),
-    JIMP = require('jimp'),
-    STORAGE = './storage/';
+const CONFIG = require('../config/config');
+const JIMP = require('jimp');
+const FS = require('fs');
+const LOGGER = require('../libs/log4');
 
 exports.convert = function(response, data) {
 
@@ -30,14 +30,24 @@ exports.convert = function(response, data) {
         JIMP.read(response.data)
             .then(function (file) {
                 let jpg = data.object_name.replace('.tif', '.jpg');
-                file.quality(CONFIG.imageQuality).write(STORAGE + jpg); // data.object_name
+                file.quality(CONFIG.imageQuality).write(CONFIG.storagePath + jpg); // data.object_name
                 LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + jpg + ' saved.');
             })
             .catch(function (error) {
-                LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+                LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error.message);
             });
 
     } catch (error) {
-        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error);
+
+        LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while converting file: ' + error.message);
+
+        FS.writeFile(CONFIG.storagePath + data.object_name, response.data, function(error) {
+
+            if (error) {
+                LOGGER.module().error('ERROR: [/convert/service (convert_tiff)] Error occurred while writing to disk: ' + error.message);
+            }
+
+            LOGGER.module().info('INFO: [/convert/service (convert_tiff)] ' + data.object_name.replace('.jpg', '.tif') + ' saved as tiff.');
+        });
     }
 };
