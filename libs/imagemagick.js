@@ -30,7 +30,7 @@ exports.convert = async function(response, data) {
 
         let buffer = await IM.convert({
             srcData: response.data,
-            srcFormat: 'TIFF',
+            srcFormat: 'TIFF', // 'TIFF', JP2
             quality: CONFIG.imageQuality,
             format: 'JPG'
         });
